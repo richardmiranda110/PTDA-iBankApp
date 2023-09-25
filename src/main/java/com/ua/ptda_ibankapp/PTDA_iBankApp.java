@@ -7,11 +7,14 @@ package com.ua.ptda_ibankapp;
 
 /**
  *
- * @author Asus
+ * @author Richard Miranda
+ * @author Gonçalo Dias
+ * @author Ricardo Fonseca
+ * @author Diogo Simão
  */
 public class PTDA_iBankApp {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        
     }
 }
