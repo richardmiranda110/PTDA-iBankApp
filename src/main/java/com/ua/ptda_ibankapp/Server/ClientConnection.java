@@ -12,13 +12,4 @@ import com.amazonaws.auth.*;
  */
 public class ClientConnection {
 
-    //Socket socket;
-    BasicSessionCredentials token;
-    long tokenLastTimeUsed;
-    long tokenCreationTime;
-
-    public ClientConnection() {
-        tokenLastTimeUsed = System.currentTimeMillis();
-        token = new BasicSessionCredentials("", "", "");
-    }
 }
