@@ -4,6 +4,19 @@
     <groupId>com.ua.ptda_ibankapp</groupId>
     <artifactId>PTDA_iBankApp</artifactId>
     <version>1.0-SNAPSHOT</version>
+        <dependencies>
+                <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-core</artifactId>
+            <version>1.12.545</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-emr</artifactId>
+            <version>1.12.544</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
