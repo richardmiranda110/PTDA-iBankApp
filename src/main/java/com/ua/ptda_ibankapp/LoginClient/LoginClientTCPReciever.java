@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.io.InputStream;
+import java.net.ConnectException;
 
 /**
  *
@@ -23,7 +24,7 @@ public class LoginClientTCPReciever {
         this.remote = new InetSocketAddress(ServerInfo.SERVER_ADDRESS, ServerInfo.SERVER_RECIEVER_PORT);
     }
 
-    private void prepareForComunication() {
+    private boolean prepareForComunication() {
         try {
             socketChannel = SocketChannel.open();
             socketChannel.connect(remote);
@@ -32,8 +33,10 @@ public class LoginClientTCPReciever {
                 //wait
             }
 
+            return true;
         } catch (IOException ex) {
-            ex.printStackTrace(System.out);
+            //ex.printStackTrace(System.out);
+            return false;
         }
     }
 
@@ -42,9 +45,9 @@ public class LoginClientTCPReciever {
     }
 
     Object recieveObject() {
-        try {
+        try (ObjectInputStream is = new ObjectInputStream(socketChannel.socket().getInputStream())) {
             prepareForComunication();
-            ObjectInputStream is = new ObjectInputStream(socketChannel.socket().getInputStream());
+
             Object answer = is.readObject();
 
             socketChannel.close();
@@ -68,8 +71,9 @@ public class LoginClientTCPReciever {
             return (int) answer[0];
 
         } catch (IOException ex) {
-            ex.printStackTrace(System.out);
-            return -1;
+
+            //ex.printStackTrace(System.out);
         }
+        return -1;
     }
 }

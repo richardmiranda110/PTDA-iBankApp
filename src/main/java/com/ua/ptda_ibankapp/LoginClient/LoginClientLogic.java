@@ -7,11 +7,6 @@ import com.amazonaws.services.elasticmapreduce.model.Credentials;
 import com.amazonaws.services.elasticmapreduce.model.UsernamePassword;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.ConnectException;
-import java.net.InetSocketAddress;
-import java.net.SocketException;
-import java.nio.channels.SocketChannel;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,20 +26,15 @@ public class LoginClientLogic {
         reciever = new LoginClientTCPReciever();
         sender = new LoginClientTCPSender();
     }
-    //https://www.youtube.com/watch?v=LcNkQcs7jIg WATCH THIS, secalhar para dar load  a layout é top xuxa
-    //https://youtu.be/-nDVy45eOYQ?list=PLL-4P1BOZnWwauNPsQ_Q13hVL1LHvhy30 para verificar exceptions em completablefuture
-    //https://youtu.be/jVamXKqXn2Y?list=PLL-4P1BOZnWwauNPsQ_Q13hVL1LHvhy30 para adicionar timeout
 
     public void createAnswerAsyncThread() {
 
-        CompletableFuture.supplyAsync(() -> reciever.recieveIncomingInteger())
-                .thenApply(data -> jsonParser(data)
-                //put the json parser here
-                //what this will do is treat the value before giving it as final statement
-                ).thenAccept(data -> {
-                    //this is the info that the UI will recieve
-                    System.out.println(String.format("Server response: %s\nActual response: %d", answer == 0 ? "correct" : "wrong password", data));
-                }).thenRun(action -> openMainLayout());
+        //createSocketChannel();
+        CompletableFuture.supplyAsync(() -> reciever.recieveIncomingInteger()).thenAccept((answer) -> {
+
+            System.out.println(String.format("Server response: %s\nActual response: %d", answer == 0 ? "correct" : "wrong password", answer));
+        });
+
     }
 
     public void showErrorMessage(String message) {
