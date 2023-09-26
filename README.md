@@ -6,6 +6,9 @@ iBank is a bank APP made with sockets, swing and implements networking, multithr
 
 Be sure to install a version of Java SDK that supports Java 8
 
+```
+javac file.java
+```
 ![image](https://github.com/richardmiranda110/PTDA-iBankApp/assets/93994704/439cc838-ee6c-4423-b602-4417b1ca3903)
 
 ## Contributing
