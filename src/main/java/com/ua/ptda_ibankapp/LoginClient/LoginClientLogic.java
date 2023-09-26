@@ -1,7 +1,7 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
-package project.LoginClient;
+package com.ua.ptda_ibankapp.LoginClient;
 
 import com.amazonaws.services.elasticmapreduce.model.Credentials;
 import com.amazonaws.services.elasticmapreduce.model.UsernamePassword;
