@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package project.MainLayout;
+package com.ua.ptda_ibankapp.MainLayout;
 
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -23,13 +23,7 @@ public class NewJPanel extends javax.swing.JPanel {
      */
     public NewJPanel() {
         initComponents();
-        try {
 
-        } catch (FontFormatException ex) {
-            Logger.getLogger(NewJPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(NewJPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     /**
