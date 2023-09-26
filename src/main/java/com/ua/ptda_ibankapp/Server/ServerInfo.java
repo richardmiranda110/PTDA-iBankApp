@@ -4,8 +4,6 @@
  */
 package com.ua.ptda_ibankapp.Server;
 
-import project.LoginClient.*;
-
 /**
  *
  * @author ricar
