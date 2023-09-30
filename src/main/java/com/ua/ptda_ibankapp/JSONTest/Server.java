@@ -22,7 +22,7 @@ public class Server {
     private SocketChannel createSocketChannel() throws IOException {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.socket().bind(new InetSocketAddress(9100));
-        //eu tambem fiquei confuso com esta função, eu abro o server, espero receber algo e fecho quando receber conexão
+        //eu tambem fiquei confuso com esta função, eu abro o server, espero receber algo e fecho quando receber cago no server
         socketChannel = serverSocketChannel.accept();
         return socketChannel;
     }
