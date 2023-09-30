@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.GatheringByteChannel;
-import java.nio.channels.ScatteringByteChannel;
 import java.nio.channels.SocketChannel;
 
 public class JSONStringSenderReciever {
@@ -23,47 +22,22 @@ public class JSONStringSenderReciever {
      * @return will return the read JSON String
      * @throws IOException
      */
-    private JSONStringObject recieveIncomingMessage(SocketChannel socketChannel) throws IOException {
+    private SocketMessageContainer recieveIncomingMessage(SocketChannel socketChannel) {
+
         ByteBuffer buffer = ByteBuffer.allocate(1024);
-        InputStream in = socketChannel.socket().getInputStream();
+        try (InputStream in = socketChannel.socket().getInputStream()) {
 
-        ScatteringByteChannel scatter = socketChannel;
-
-        if ((socketChannel.read(buffer)) == 0) {
-            try {
+            if ((socketChannel.read(buffer)) == 0) {
                 throw new Exception("NO DATA RECIEVED");
-            } catch (Exception ex) {
-                return null;
             }
-        }
 
-        StringBuilder head = null;
-        StringBuilder body = null;
-
-        while (buffer.hasRemaining()) {
             buffer.flip();
-
-            head = new StringBuilder();
-            body = new StringBuilder();
-            boolean limiterFlagRaised = false;
-
-            while (buffer.hasRemaining()) {
-                char c = (char) buffer.get();
-
-                if (c == CHAR_LIMITER) {
-                    limiterFlagRaised = true;
-                    continue;
-                }
-
-                if (!limiterFlagRaised) {
-                    head.append(c);
-                } else {
-                    body.append(c);
-                }
-            }
+            String[] structure = new String(buffer.array()).split("\t");
+            return new SocketMessageContainer(structure[0], structure[1]);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+            return null;
         }
-
-        return new JSONStringObject(head.toString(), body.toString());
 
     }
 
@@ -82,13 +56,9 @@ public class JSONStringSenderReciever {
             GatheringByteChannel gather = socketChannel;
 
             if (gather.write(new ByteBuffer[]{header, delimiter, body}) == 0) {
-                try {
-                    throw new Exception("Sent 0 or not able to send Message");
-                } catch (Exception ex) {
-                    ex.printStackTrace(System.out);
-                }
+                throw new Exception("Sent 0 or not able to send Message");
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace(System.out);
         }
     }
