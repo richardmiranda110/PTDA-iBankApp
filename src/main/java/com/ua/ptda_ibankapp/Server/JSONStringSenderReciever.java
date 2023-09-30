@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 public class JSONStringSenderReciever {
 
-    private final char CHAR_LIMITER = '\t';
+    private final String CHAR_LIMITER = "\t";
 
     /**
      * This function prepares the data to be recieved in the form of a JSON
@@ -46,7 +46,7 @@ public class JSONStringSenderReciever {
 
         //separate packet content with split, more performant
         //return in the right format
-        return new SocketMessageContainer((new String(buffer.array())).split("\t"));
+        return new SocketMessageContainer((new String(buffer.array())).split(CHAR_LIMITER));
 
     }
 
@@ -58,7 +58,7 @@ public class JSONStringSenderReciever {
      */
     private void sendObject(JSONStringObject message, SocketChannel socketChannel) {
 
-        StringJoiner strJoiner = new StringJoiner("\t");
+        StringJoiner strJoiner = new StringJoiner(CHAR_LIMITER);
         strJoiner.add(message.getHead());
         strJoiner.add(message.getBody());
 
