@@ -5,13 +5,11 @@
 package com.ua.ptda_ibankapp.Server;
 
 import java.io.IOException;
-import java.io.InputStream;
+
 import java.nio.ByteBuffer;
-import java.nio.channels.GatheringByteChannel;
+
 import java.nio.channels.SocketChannel;
 import java.util.StringJoiner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class JSONStringSenderReciever {
 
@@ -56,7 +54,7 @@ public class JSONStringSenderReciever {
      * @param message packet to be sent using the JSONStringObject class
      * @param socketChannel a socket channel bound to a port and ready to send
      */
-    private void sendObject(JSONStringObject message, SocketChannel socketChannel) {
+    private void sendJSONObject(JSONStringObject message, SocketChannel socketChannel) {
 
         StringJoiner strJoiner = new StringJoiner(CHAR_LIMITER);
         strJoiner.add(message.getHead());
