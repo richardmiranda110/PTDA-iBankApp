@@ -57,6 +57,7 @@ public class Server {
 
         // ESTA MERDA CHAMOU O MEU JSON DE MALFORMED, PO CARALHO D:
         //gonçalo ou richard pls, eu estou a ficar sem sanidade mental
+        //tem a haver com a  maneira que eu formo a string no cliente, num faço ponta do que estou a fazer
         System.out.println(String.format("HEAD:\n%s\nBODY:\n%s", incomingSocketContent.getHead(), incomingSocketContent.getBody()));
     }
 
