@@ -19,6 +19,12 @@ public class SocketMessageContainer {
 
     }
 
+    public SocketMessageContainer(String[] strArrayWithContent) {
+        this.head = strArrayWithContent[0];
+        this.body = strArrayWithContent[1];
+
+    }
+
     public String getHead() {
         return head;
     }

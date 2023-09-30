@@ -9,6 +9,9 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.SocketChannel;
+import java.util.StringJoiner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class JSONStringSenderReciever {
 
@@ -23,21 +26,27 @@ public class JSONStringSenderReciever {
      * @throws IOException
      */
     private SocketMessageContainer recieveIncomingMessage(SocketChannel socketChannel) {
-
+        // create Java IO buffer, could be a normal buffer, we're just recieving a message from socket
         ByteBuffer buffer = ByteBuffer.allocate(1024);
-        try (InputStream in = socketChannel.socket().getInputStream()) {
 
+        try {
+
+            //if theres no data, throw excaption
             if ((socketChannel.read(buffer)) == 0) {
                 throw new Exception("NO DATA RECIEVED");
             }
 
-            buffer.flip();
-            String[] structure = new String(buffer.array()).split("\t");
-            return new SocketMessageContainer(structure[0], structure[1]);
         } catch (Exception ex) {
             ex.printStackTrace(System.out);
             return null;
         }
+
+        //enable buffer read mode
+        buffer.flip();
+
+        //separate packet content with split, more performant
+        //return in the right format
+        return new SocketMessageContainer((new String(buffer.array())).split("\t"));
 
     }
 
@@ -48,17 +57,16 @@ public class JSONStringSenderReciever {
      * @param socketChannel a socket channel bound to a port and ready to send
      */
     private void sendObject(JSONStringObject message, SocketChannel socketChannel) {
+
+        StringJoiner strJoiner = new StringJoiner("\t");
+        strJoiner.add(message.getHead());
+        strJoiner.add(message.getBody());
+
+        ByteBuffer buffer = ByteBuffer.wrap(strJoiner.toString().getBytes());
+
         try {
-            ByteBuffer header = ByteBuffer.wrap(message.getHead().getBytes());
-            ByteBuffer delimiter = ByteBuffer.wrap(new byte[]{CHAR_LIMITER});
-            ByteBuffer body = ByteBuffer.wrap(message.getBody().getBytes());
-
-            GatheringByteChannel gather = socketChannel;
-
-            if (gather.write(new ByteBuffer[]{header, delimiter, body}) == 0) {
-                throw new Exception("Sent 0 or not able to send Message");
-            }
-        } catch (Exception ex) {
+            socketChannel.write(buffer);
+        } catch (IOException ex) {
             ex.printStackTrace(System.out);
         }
     }
