@@ -5,15 +5,15 @@
 package com.ua.ptda_ibankapp.Server;
 
 import java.io.IOException;
-import java.io.InputStream;
+
 import java.nio.ByteBuffer;
-import java.nio.channels.GatheringByteChannel;
-import java.nio.channels.ScatteringByteChannel;
+
 import java.nio.channels.SocketChannel;
+import java.util.StringJoiner;
 
 public class JSONStringSenderReciever {
 
-    private final char CHAR_LIMITER = '\t';
+    private final String CHAR_LIMITER = "\t";
 
     /**
      * This function prepares the data to be recieved in the form of a JSON
@@ -23,47 +23,28 @@ public class JSONStringSenderReciever {
      * @return will return the read JSON String
      * @throws IOException
      */
-    private JSONStringObject recieveIncomingMessage(SocketChannel socketChannel) throws IOException {
+    private SocketMessageContainer recieveIncomingMessage(SocketChannel socketChannel) {
+        // create Java IO buffer, could be a normal buffer, we're just recieving a message from socket
         ByteBuffer buffer = ByteBuffer.allocate(1024);
-        InputStream in = socketChannel.socket().getInputStream();
 
-        ScatteringByteChannel scatter = socketChannel;
+        try {
 
-        if ((socketChannel.read(buffer)) == 0) {
-            try {
+            //if theres no data, throw excaption
+            if ((socketChannel.read(buffer)) == 0) {
                 throw new Exception("NO DATA RECIEVED");
-            } catch (Exception ex) {
-                return null;
             }
+
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+            return null;
         }
 
-        StringBuilder head = null;
-        StringBuilder body = null;
+        //enable buffer read mode
+        buffer.flip();
 
-        while (buffer.hasRemaining()) {
-            buffer.flip();
-
-            head = new StringBuilder();
-            body = new StringBuilder();
-            boolean limiterFlagRaised = false;
-
-            while (buffer.hasRemaining()) {
-                char c = (char) buffer.get();
-
-                if (c == CHAR_LIMITER) {
-                    limiterFlagRaised = true;
-                    continue;
-                }
-
-                if (!limiterFlagRaised) {
-                    head.append(c);
-                } else {
-                    body.append(c);
-                }
-            }
-        }
-
-        return new JSONStringObject(head.toString(), body.toString());
+        //separate packet content with split, more performant
+        //return in the right format
+        return new SocketMessageContainer((new String(buffer.array())).split(CHAR_LIMITER));
 
     }
 
@@ -73,21 +54,16 @@ public class JSONStringSenderReciever {
      * @param message packet to be sent using the JSONStringObject class
      * @param socketChannel a socket channel bound to a port and ready to send
      */
-    private void sendObject(JSONStringObject message, SocketChannel socketChannel) {
+    private void sendJSONObject(JSONStringObject message, SocketChannel socketChannel) {
+
+        StringJoiner strJoiner = new StringJoiner(CHAR_LIMITER);
+        strJoiner.add(message.getHead());
+        strJoiner.add(message.getBody());
+
+        ByteBuffer buffer = ByteBuffer.wrap(strJoiner.toString().getBytes());
+
         try {
-            ByteBuffer header = ByteBuffer.wrap(message.getHead().getBytes());
-            ByteBuffer delimiter = ByteBuffer.wrap(new byte[]{CHAR_LIMITER});
-            ByteBuffer body = ByteBuffer.wrap(message.getBody().getBytes());
-
-            GatheringByteChannel gather = socketChannel;
-
-            if (gather.write(new ByteBuffer[]{header, delimiter, body}) == 0) {
-                try {
-                    throw new Exception("Sent 0 or not able to send Message");
-                } catch (Exception ex) {
-                    ex.printStackTrace(System.out);
-                }
-            }
+            socketChannel.write(buffer);
         } catch (IOException ex) {
             ex.printStackTrace(System.out);
         }

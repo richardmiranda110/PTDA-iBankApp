@@ -4,37 +4,32 @@
  */
 package com.ua.ptda_ibankapp.Server;
 
-import java.nio.ByteBuffer;
-
 /**
  *
  * @author ricar
  */
 public class SocketMessageContainer {
 
-    private ByteBuffer head;
-    private ByteBuffer body;
+    private String head;
+    private String body;
 
-    public SocketMessageContainer(ByteBuffer head, ByteBuffer message) {
+    public SocketMessageContainer(String head, String message) {
         this.head = head;
         this.body = message;
 
     }
 
-    public SocketMessageContainer(byte[] wrapToHead, byte[] wrapToBody) {
-        head = ByteBuffer.wrap(wrapToHead);
-        body = ByteBuffer.wrap(wrapToBody);
+    public SocketMessageContainer(String[] strArrayWithContent) {
+        this.head = strArrayWithContent[0];
+        this.body = strArrayWithContent[1];
+
     }
 
-    ByteBuffer[] getContainer() {
-        return new ByteBuffer[]{head, body};
-    }
-
-    public ByteBuffer getHead() {
+    public String getHead() {
         return head;
     }
 
-    public ByteBuffer getBody() {
+    public String getBody() {
         return body;
     }
 
